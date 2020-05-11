@@ -1,13 +1,18 @@
 import React from 'react';
 import { ListItem, FormControlLabel, Checkbox } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { red } from '@material-ui/core/colors';
+import EditIcon from '@material-ui/icons/Edit';
+import { red, blue } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => {
 	return {
 		deleteIcon: {
             color: red[400],
+            cursor: 'pointer'
+        },
+        editIcon: {
+            color: blue[400],
             cursor: 'pointer'
         }
 	}
@@ -20,7 +25,7 @@ class Item extends React.Component{
     }
 
     render(){
-        const { item, classes } = this.props;
+        const { item, classes, deleteTodo, openModal } = this.props;
         return (
             <ListItem>
                 <FormControlLabel 
@@ -29,9 +34,11 @@ class Item extends React.Component{
                 />
                 <DeleteIcon 
                     className={classes.deleteIcon} 
-                    onClick={() => {this.props.deleteTodo(item.id)}}
+                    onClick={() => {deleteTodo(item.id)}}
                 />
-			</ListItem>
+                <EditIcon className={classes.editIcon} onClick={() => {openModal(item)}}/>
+            </ListItem>
+            
         );
     }
 }
