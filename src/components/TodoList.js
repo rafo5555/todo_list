@@ -5,7 +5,7 @@ import Item from './Item';
 class TodoList extends React.Component{
 
     render(){
-        const { items, handleItemCheck, deleteTodo, openModal } = this.props;
+        const { items, handleItemCheck, openConfirmation, editTodo } = this.props;
         return (
             <List>
 				{items && items.map((item) => {
@@ -14,8 +14,8 @@ class TodoList extends React.Component{
                             item={item}
                             key={item.id} 
                             handleItemCheck={handleItemCheck}
-                            deleteTodo={deleteTodo}
-                            openModal={openModal}
+                            openConfirmation={openConfirmation}
+                            editTodo={editTodo}
                         /> 
                     );
                 })}
@@ -23,7 +23,6 @@ class TodoList extends React.Component{
             
         );
     }
-
 }
 
 export default TodoList;

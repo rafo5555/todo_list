@@ -1,6 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import{ Modal, TextField, Button, ButtonGroup } from '@material-ui/core';
+import{ Modal, Button, ButtonGroup } from '@material-ui/core';
 
 
 const styles = (theme) => {
@@ -27,26 +27,19 @@ const styles = (theme) => {
 	}
 };
 
-class ModalComponent extends React.Component{
+class ConfirmationModal extends React.Component{
 
     render(){
-        const {classes, isOpen, closeModal, editValue, handleChange, editTodo} = this.props;
+        const {classes, isOpen, closeModal, item, deleteTodo} = this.props;
         return (
             <Modal open={isOpen} className={classes.modal} >
                 <div className={classes.paper}>
                     <h3 className={classes.heading}>Edit Todo</h3>
                     <div className={classes.wrapper}>
-                        <TextField 
-                            variant="outlined" 
-                            fullWidth 
-                            value={editValue.todo}  
-                            onChange={handleChange}
-                            error={!!editValue.error}
-                            helperText={editValue.error}
-                        />
+                       <h3>Do you want to delete {item && item.todo}</h3>
                     </div> 
                     <ButtonGroup variant="contained" color="primary" className={classes.wrapper} >
-                        <Button onClick={editTodo}>Edit</Button>
+                        <Button onClick={() => {deleteTodo(item.id)}}>Delete</Button>
                         <Button color="secondary" onClick={closeModal}>Cancel</Button>
                     </ButtonGroup>
                 </div>
@@ -56,4 +49,4 @@ class ModalComponent extends React.Component{
 
 }
 
-export default withStyles(styles)(ModalComponent);
+export default withStyles(styles)(ConfirmationModal);

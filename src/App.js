@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import{ Container } from '@material-ui/core';
 import AddTodo from './components/AddTodo';
 import TodoList from './components/TodoList';
-import ModalComponent from './components/ModalComponent';
+import ConfirmationModal from './components/ConfirmationModal';
 
 const styles = (theme) => {
 	return {
@@ -20,12 +20,7 @@ class App extends React.Component {
 	state = {
 		items: [],
 		isOpen: false,
-		editValue: {
-			id: null,
-			todo: '',
-			checked: false,
-			error: ''
-		}
+		deleteValue: null
 	}
 
 	handleItemCheck = (id) => {
@@ -41,7 +36,8 @@ class App extends React.Component {
 
 	deleteTodo = (id) => {
 		this.setState({
-			items: this.state.items.filter(el => el.id !== id)
+			items: this.state.items.filter(el => el.id !== id),
+			isOpen: false
 		});
 	}
 
@@ -49,69 +45,54 @@ class App extends React.Component {
 		this.setState({
 			items: [item, ...this.state.items]
 		});
-		
 	}
 
 	closeModal = () => {
 		this.setState({isOpen: false});
 	}
 
-	openModal = (item) => {
+	openConfirmation = (item) => {
 		this.setState({
 			isOpen: true,
-			editValue: item
+			deleteValue: item
 		});
 	}
 
-	editTodo = () => {
-		let error = ''
-		let {items, editValue, isOpen} = this.state;
-
-		if(editValue.todo.length < 6){
-			error = 'There should be at least 6 characters';
-		}else{
-			items = items.map(item => {
-				if(item.id === editValue.id){
-					return {
-						...item,
-						todo: editValue.todo
-					}
+	editTodo = (editValue) => {
+		let {items} = this.state;
+		items = items.map(item => {
+			if(item.id === editValue.id){
+				return {
+					...item,
+					todo: editValue.todo
 				}
-				return item;
-			});
-			isOpen = false;
-		}
-
-		this.setState({
-			editValue: {...editValue, error: error},
-			items: items,
-			isOpen: isOpen
+			}
+			return item;
 		});
-	}
+		
 
-	handleChange = (e) => {
 		this.setState({
-			editValue: {...this.state.editValue, todo: e.target.value}
+			items: items,
 		});
 	}
   
 	render() {
 		const {classes} = this.props;    
+		const {deleteValue, items} = this.state;    
 		return (
 			<Container className={classes.container}>
 				<AddTodo addTodo={this.addTodo}/>
 				<TodoList 
-					items={this.state.items} 
+					items={items} 
 					handleItemCheck={this.handleItemCheck}
-					deleteTodo={this.deleteTodo}
-					openModal={this.openModal}
+					openConfirmation={this.openConfirmation}
+					editTodo={this.editTodo}
 				/>
-				<ModalComponent 
+				<ConfirmationModal 
 					isOpen={this.state.isOpen} 
 					closeModal={this.closeModal} 
-					editValue={this.state.editValue}
-					handleChange={this.handleChange}
-					editTodo={this.editTodo}
+					item={deleteValue}
+					deleteTodo={this.deleteTodo}
 				/>
 			</Container>
 		);
