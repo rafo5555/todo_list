@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { ListItem, FormControlLabel, Checkbox, TextField } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -28,64 +28,54 @@ const styles = (theme) => {
 	}
 };
 
-class Item extends React.Component{
+function Item({item, handleItemCheck, editTodo, classes, openConfirmation}){
+    const [isEditable, setIsEditable] = useState(false);
+    const [inputValue, setInputValue] = useState(item.todo);
+    const [error, setError] = useState('');
 
-    state = {
-        isEditable: false,
-        inputValue: this.props.item.todo,
-        error: ''
-    };
-
-    handleCheck = () => {
-        this.props.handleItemCheck(this.props.item.id);
+    function handleCheck(){
+        handleItemCheck(item.id);
     }
 
-    hanleOnChange = (e) => {
-        this.setState({inputValue: e.target.value });
+    function hanleOnChange(e){
+        setInputValue(e.target.value);
     }
 
-    handleOnClick = () => {
-        const {isEditable, inputValue} = this.state;
-        const {editTodo, item} = this.props;
+    function handleOnClick(){
         let editable = true
-        let error = '';
+        let text = '';
         if(isEditable){
             if(inputValue.length < 6){
-                error = 'There should be at least 6 characters';
+                text = 'There should be at least 6 characters';
             }else{
                 editable = false;
                 editTodo({...item, todo: inputValue});
             }
         }
-        this.setState({
-            isEditable: editable,
-            error: error
-        });
+        setIsEditable(editable);
+        setError(text);
     }
- 
-    render(){
-        const { item, classes, openConfirmation } = this.props;
-        const {isEditable, inputValue, error} = this.state;
-        const Icon = isEditable ? DoneIcon : EditIcon;
-        const iconName =  isEditable ? 'saveIcon' : 'editIcon';
-        return (
-            <ListItem className={classes.listItem}>
-                <FormControlLabel 
-                    control={<Checkbox color="primary" checked={item.checked} onChange={this.handleCheck}/>}
-                    label={isEditable ?
-                         <TextField value={inputValue} onChange={this.hanleOnChange} error={!!error} helperText={error} /> 
-                        : item.todo}
+    
+    const Icon = isEditable ? DoneIcon : EditIcon;
+    const iconName =  isEditable ? 'saveIcon' : 'editIcon';
+    return (
+        <ListItem className={classes.listItem}>
+            <FormControlLabel 
+                control={<Checkbox color="primary" checked={item.checked} onChange={handleCheck}/>}
+                label={isEditable ?
+                        <TextField value={inputValue} onChange={hanleOnChange} error={!!error} helperText={error} /> 
+                    : item.todo}
+            />
+            <span>
+                <DeleteIcon 
+                    className={classes.deleteIcon} 
+                    onClick={() => {openConfirmation(item)}}
                 />
-                <span>
-                    <DeleteIcon 
-                        className={classes.deleteIcon} 
-                        onClick={() => {openConfirmation(item)}}
-                    />
-                <Icon className={classes[iconName]} onClick={this.handleOnClick}/>    
-                </span>
-            </ListItem>
-        );
-    }
+            <Icon className={classes[iconName]} onClick={handleOnClick}/>    
+            </span>
+        </ListItem>
+    );
+    
 }
 
 export default withStyles(styles)(Item);

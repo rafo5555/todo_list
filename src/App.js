@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import "./App.css";
 import { withStyles } from '@material-ui/core/styles';
 import{ Container } from '@material-ui/core';
@@ -15,51 +15,42 @@ const styles = (theme) => {
 	}
 };
 
-class App extends React.Component {
+function App(props){
 
-	state = {
-		items: [],
-		isOpen: false,
-		deleteValue: null
-	}
+	let [items, setItems] = useState([]);
+	const [isOpen, setIsOpen] = useState(false);
+	const [deleteValue, setDeleteValue] = useState(null);
 
-	handleItemCheck = (id) => {
-		this.setState({
-			items: this.state.items.map((el) => {
+	function handleItemCheck(id){
+		setItems(
+			items.map((el) => {
 				if(el.id === id){
 					el.checked = !el.checked
 				}
 				return el;
 			})
-		});
+		);
 	}
 
-	deleteTodo = (id) => {
-		this.setState({
-			items: this.state.items.filter(el => el.id !== id),
-			isOpen: false
-		});
+	function deleteTodo(id){
+		setItems(items.filter(el => el.id !== id));
+		setIsOpen(false);
 	}
 
-	addTodo = (item) => {
-		this.setState({
-			items: [item, ...this.state.items]
-		});
+	function addTodo(item){
+		setItems([item, ...items]);
 	}
 
-	closeModal = () => {
-		this.setState({isOpen: false});
+	function closeModal(){
+		setIsOpen(false);
 	}
 
-	openConfirmation = (item) => {
-		this.setState({
-			isOpen: true,
-			deleteValue: item
-		});
+	function openConfirmation(item){
+		setIsOpen(true);
+		setDeleteValue(item);
 	}
 
-	editTodo = (editValue) => {
-		let {items} = this.state;
+	function editTodo(editValue){
 		items = items.map(item => {
 			if(item.id === editValue.id){
 				return {
@@ -69,34 +60,26 @@ class App extends React.Component {
 			}
 			return item;
 		});
-		
+		setItems(items);
+	}
 
-		this.setState({
-			items: items,
-		});
-	}
-  
-	render() {
-		const {classes} = this.props;    
-		const {deleteValue, items} = this.state;    
-		return (
-			<Container className={classes.container}>
-				<AddTodo addTodo={this.addTodo}/>
-				<TodoList 
-					items={items} 
-					handleItemCheck={this.handleItemCheck}
-					openConfirmation={this.openConfirmation}
-					editTodo={this.editTodo}
-				/>
-				<ConfirmationModal 
-					isOpen={this.state.isOpen} 
-					closeModal={this.closeModal} 
-					item={deleteValue}
-					deleteTodo={this.deleteTodo}
-				/>
-			</Container>
-		);
-	}
+	return (
+		<Container className={props.classes.container}>
+			<AddTodo addTodo={addTodo}/>
+			<TodoList 
+				items={items} 
+				handleItemCheck={handleItemCheck}
+				openConfirmation={openConfirmation}
+				editTodo={editTodo}
+			/>
+			<ConfirmationModal 
+				isOpen={isOpen} 
+				closeModal={closeModal} 
+				item={deleteValue}
+				deleteTodo={deleteTodo}
+			/>
+		</Container>
+	);
 }
 
 export default withStyles(styles)(App);

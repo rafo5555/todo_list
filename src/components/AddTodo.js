@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { TextField, Button } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
@@ -20,60 +20,50 @@ const styles = (theme) => {
 	}
 };
 
-class AddTodo extends React.Component{
-
-    state = {
-        inputValue: '',
-        error: false,
-        errorText: ''
-    }
-
-    handleChange = (e) => {
-		this.setState({
-			inputValue: e.target.value
-		});
+function AddTodo(props){
+    const [inputValue, setInputValue] = useState('');
+    const [error, setError] = useState(false);
+    const [errorText, setErrorText] = useState('');
+    
+    function handleChange(e){
+		setInputValue(e.target.value);
     }
     
-    handleClick = (e) => {
-        let error = false;
-        let errorText = '';
-        let inputValue = '';
-        if(this.state.inputValue.length < 6){
-            error = true;
-            errorText = 'At least 6 characters';
-            inputValue = this.state.inputValue;
+    function handleClick(e){
+        let errorPresent = false;
+        let text = '';
+        let value = '';
+        if(inputValue.length < 6){
+            errorPresent = true;
+            text = 'At least 6 characters';
+            value = inputValue;
         }else{
-            const item = {id: uuid(), todo: this.state.inputValue, checked: false};
-            this.props.addTodo(item);
+            const item = {id: uuid(), todo: inputValue, checked: false};
+            props.addTodo(item);
         }
-        this.setState({
-            error: error,
-            errorText: errorText,
-            inputValue: inputValue
-        });
+        setError(errorPresent);
+        setErrorText(text);
+        setInputValue(value);
     }
 
-    render(){
-        const { classes } = this.props;
-        return (
-            <div>
-                <TextField 
-                    error={this.state.error}
-                    helperText={this.state.errorText}
-                    type="text"
-                    placeholder="Add Todo"
-                    margin="normal"
-                    variant="outlined"
-                    className={classes.textInput}
-                    onChange={this.handleChange}
-                    value={this.state.inputValue}
-                />
-                <Button className={classes.button} onClick={this.handleClick}>
-                    Add Todo
-                </Button>
-            </div>
-        );
-    }
+    return (
+        <div>
+            <TextField 
+                error={error}
+                helperText={errorText}
+                type="text"
+                placeholder="Add Todo"
+                margin="normal"
+                variant="outlined"
+                className={props.classes.textInput}
+                onChange={handleChange}
+                value={inputValue}
+            />
+            <Button className={props.classes.button} onClick={handleClick}>
+                Add Todo
+            </Button>
+        </div>
+    );
 }
 
 export default withStyles(styles)(AddTodo);
