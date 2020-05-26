@@ -27,10 +27,8 @@ const styles = (theme) => {
 	}
 };
 
-class ConfirmationModal extends React.Component{
+function ConfirmationModal({classes, isOpen, closeModal, item, deleteTodo}){
 
-    render(){
-        const {classes, isOpen, closeModal, item, deleteTodo} = this.props;
         return (
             <Modal open={isOpen} className={classes.modal} >
                 <div className={classes.paper}>
@@ -45,8 +43,6 @@ class ConfirmationModal extends React.Component{
                 </div>
             </Modal>
         );
-    }
-
 }
 
 export default withStyles(styles)(ConfirmationModal);
